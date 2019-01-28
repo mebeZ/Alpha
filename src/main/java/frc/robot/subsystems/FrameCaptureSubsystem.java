@@ -1,9 +1,38 @@
-public class FrameCapture extends Subsystem {
-    public static void main(String[] args) {
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME); // Placeholder for API used to connect to server
-        VideoCapture cap = new VideoCapture(1); // Placeholder for IP address
-        flag, frame = cap.retrieve();
-        cap.imshow('video', frame);
-    }
+package frc.robot.subsystems;
+
+import edu.wpi.first.wpilibj.command.Subsystem;
+
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+
+import org.opencv.core.Core;
+import org.opencv.videoio.VideoCapture;
+import org.opencv.core.Core;
+import org.opencv.core.CvType;
+import org.opencv.core.Mat;
+
+import java.awt.image.BufferedImage;
+
+public class FrameCaptureSubsystem
+    {
+    VideoCapture cap;
     
-}
+    public void subcam() {
+        cap = new VideoCapture(0);
+    }
+ 
+    public void openCam() {
+        cap.open(0);
+    }
+  
+    public void isOpened() {
+        if (cap.isOpened()) {
+            System.out.println("cap is opened");
+        }
+    }
+
+    public void initDefaultCommand() {
+        // Set the default command for a subsystem here.
+        // setDefaultCommand(new MySpecialCommand());
+      }
+    }

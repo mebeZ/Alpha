@@ -7,101 +7,58 @@
 
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.sensors.PigeonIMU;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import frc.robot.commands.OpenWingsCommand;
-import frc.robot.commands.TankDriveCommand;
-import frc.robot.commands.ZLiftCommand;
-import frc.robot.subsystems.LiftSubsystem;
-import frc.robot.subsystems.LimelightSubsystem;
-import frc.robot.subsystems.LineupSubsystem;
-import frc.robot.subsystems.PositioningSubsystem;
-import frc.robot.subsystems.RetroreflectiveTapeSubsystem;
-import frc.robot.subsystems.TankDriveSubsystem;
-import frc.robot.subsystems.WingsSubsystem;
-import frc.robot.subsystems.ZLiftSubsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+//import frc.robot.commands.ExampleCommand;
+//import frc.robot.subsystems.ExampleSubsystem;
 
+/**
+ * The VM is configured to automatically run this class, and to call the
+ * functions corresponding to each mode, as described in the TimedRobot
+ * documentation. If you change the name of this class or the package after
+ * creating this project, you must also update the build.gradle file in the
+ * project.
+ */
 public class Robot extends TimedRobot {
-  public static OI oi;
-  public static TankDriveSubsystem tankDriveSubsystem;
-  public static LiftSubsystem liftSubsystem;
-  public static PositioningSubsystem pos;
-  public static LineupSubsystem lineup;
-  public static RetroreflectiveTapeSubsystem retroreflective;
-  public static LimelightSubsystem limelight;
-  public static WingsSubsystem wingsSubsystem;
-  public static ZLiftSubsystem ZLiftSubsystem;
-
-  public static PigeonIMU pigeon;
-  public static TalonSRX pigeonTalon;
-  public static CANSparkMax lf, lm, lb, rf, rm, rb;
-
-  // Constants for LIFT
-  public static double LOWEST_LIFT_POS = 1;
-  public static double GREATEST_LIFT_POS = 2000;
-
-  // Constants for ZLIFT
-  public static double WHEEL_RADIUS = 0.0;
-  public static double WHEEL_CIRCUMFERENCE = 2 * Math.PI * WHEEL_RADIUS;
-  public static double LEVEL_THREE_HEIGHT = 22;
-  public static double MAX_ZLIFT_ANGLE_THRESH = 5;
+  //public static ExampleSubsystem m_subsystem = new ExampleSubsystem();
+  public static OI m_oi;
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
 
+  /**
+   * This function is run when the robot is first started up and should be
+   * used for any initialization code.
+   */
   @Override
   public void robotInit() {
-    oi = new OI();
-    tankDriveSubsystem = new TankDriveSubsystem();
-    liftSubsystem = new LiftSubsystem();
-    pos = new PositioningSubsystem();
-    lineup = new LineupSubsystem();
-    retroreflective = new RetroreflectiveTapeSubsystem();
-    limelight = new LimelightSubsystem();
-    wingsSubsystem = new WingsSubsystem();
-    ZLiftSubsystem = new ZLiftSubsystem();
-
-    oi.startWings.whenPressed(new OpenWingsCommand());
-    oi.startZLift.whenPressed(new ZLiftCommand());
-
-    // Initialize left SPARK MAXs
-    lf = new CANSparkMax(PortMap.LEFT_FRONT_SPARK, MotorType.kBrushless);
-    lm = new CANSparkMax(PortMap.LEFT_MIDDLE_SPARK, MotorType.kBrushless);
-    lb = new CANSparkMax(PortMap.LEFT_BACK_SPARK, MotorType.kBrushless);
-
-    // Initialize right SPARK MAXs
-    rf = new CANSparkMax(PortMap.RIGHT_FRONT_SPARK, MotorType.kBrushless);
-    rm = new CANSparkMax(PortMap.RIGHT_MIDDLE_SPARK, MotorType.kBrushless);
-    rb = new CANSparkMax(PortMap.RIGHT_BACK_SPARK, MotorType.kBrushless);
-    
-    pigeonTalon = new TalonSRX(PortMap.PIGEON_TALON);
-    pigeon = new PigeonIMU(pigeonTalon);
-    pigeon.setYaw(0.0, 0);
-
-    // m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
-    // SmartDashboard.putData("Auto mode", m_chooser);
-
+    m_oi = new OI();
+    //m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
+    // chooser.addOption("My Auto", new MyAutoCommand());
+    SmartDashboard.putData("Auto mode", m_chooser);
   }
 
-  public static double getPigeonAngle(){
-		double[] yawPitchRoll = new double[3];
-		pigeon.getYawPitchRoll(yawPitchRoll);
-		//System.out.println("yaw: " + yawPitchRoll[0] + " pitch: " + yawPitchRoll[1] + " roll: " + yawPitchRoll[2]);
-		return Math.toRadians(yawPitchRoll[0] % 360.);
-	}
-
+  /**
+   * This function is called every robot packet, no matter the mode. Use
+   * this for items like diagnostics that you want ran during disabled,
+   * autonomous, teleoperated and test.
+   *
+   * <p>This runs after the mode specific periodic functions, but before
+   * LiveWindow and SmartDashboard integrated updating.
+   */
   @Override
   public void robotPeriodic() {
-    Scheduler.getInstance().run();
   }
 
+  /**
+   * This function is called once each time the robot enters Disabled mode.
+   * You can use it to reset any subsystem information you want to clear when
+   * the robot is disabled.
+   */
+  @Override
   public void disabledInit() {
   }
 
@@ -110,36 +67,64 @@ public class Robot extends TimedRobot {
     Scheduler.getInstance().run();
   }
 
+  /**
+   * This autonomous (along with the chooser code above) shows how to select
+   * between different autonomous modes using the dashboard. The sendable
+   * chooser code works with the Java SmartDashboard. If you prefer the
+   * LabVIEW Dashboard, remove all of the chooser code and uncomment the
+   * getString code to get the auto name from the text box below the Gyro
+   *
+   * <p>You can add additional auto modes by adding additional commands to the
+   * chooser code above (like the commented example) or additional comparisons
+   * to the switch structure below with additional strings & commands.
+   */
   @Override
   public void autonomousInit() {
-    pigeon.setYaw(0, 30);
-    pos.updatePositionTank();
-    lineup.resetInfo(0.305 * 6.3, 0.305 * -0.6, Math.toRadians(-19));
+    m_autonomousCommand = m_chooser.getSelected();
+
+    /*
+     * String autoSelected = SmartDashboard.getString("Auto Selector",
+     * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
+     * = new MyAutoCommand(); break; case "Default Auto": default:
+     * autonomousCommand = new ExampleCommand(); break; }
+     */
+
+    // schedule the autonomous command (example)
+    if (m_autonomousCommand != null) {
+      m_autonomousCommand.start();
+    }
   }
 
+  /**
+   * This function is called periodically during autonomous.
+   */
   @Override
   public void autonomousPeriodic() {
     Scheduler.getInstance().run();
-
-    pos.updatePositionTank();
-
-    System.out.println("PRINTING: " + retroreflective.extractData().get("to print"));
   }
 
   @Override
   public void teleopInit() {
-    new TankDriveCommand().start();
-    
+    // This makes sure that the autonomous stops running when
+    // teleop starts running. If you want the autonomous to
+    // continue until interrupted by another command, remove
+    // this line or comment it out.
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
   }
 
+  /**
+   * This function is called periodically during operator control.
+   */
   @Override
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
   }
 
+  /**
+   * This function is called periodically during test mode.
+   */
   @Override
   public void testPeriodic() {
   }
